@@ -1,16 +1,18 @@
 import re
 
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message, Contact
+from aiogram.types import Message, Contact, CallbackQuery
 from aiogram.dispatcher.filters import Command, Regexp
 from aiogram.types import ReplyKeyboardRemove
+
+from filters import IsPrivate
 from keyboards.default.default_menu import get_phone_number_btn
 from keyboards.inline.inline_menu import main_menu
 from loader import dp, db
 from states.register_state import Register
 
 
-@dp.message_handler(Command('registration'), state=None)
+@dp.message_handler(Command('registration'), IsPrivate(), state=None)
 async def start_register(msg: Message):
     chat_id = msg.from_user.id
 
@@ -49,3 +51,9 @@ async def end_register(msg: Message, state: FSMContext):
         await msg.answer("Ro'yxatdan o'tdingiz😊.", reply_markup=ReplyKeyboardRemove())
         await msg.answer(f"Bo'limlardan birini tanlang: ", reply_markup=btn)
         await state.finish()
+
+@dp.callback_query_handler(text='clear')
+async def clear_card(call: CallbackQuery, state: FSMContext):
+    await call.answer("Savat tozalandi. Savat bo'sh❗")
+    await state.finish()
+    await call.message.edit_text("Bo'limlardan birini tanlang:", reply_markup=main_menu)

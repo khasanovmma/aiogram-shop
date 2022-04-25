@@ -1,12 +1,15 @@
-from aiogram import types
+from typing import Union
 from aiogram.dispatcher.filters.builtin import CommandStart
+from aiogram.types import Message, CallbackQuery
 
+from filters import IsPrivate
 from keyboards.inline.inline_menu import main_menu
 from loader import dp, db
 
 
-@dp.message_handler(CommandStart())
-async def bot_start(message: types.Message):
+@dp.message_handler(CommandStart(), IsPrivate())
+@dp.callback_query_handler(text='main_menu')
+async def bot_start(message: Union[Message, CallbackQuery]):
     chat_id = message.from_user.id
     await db.create_user(chat_id)
 
@@ -16,6 +19,8 @@ async def bot_start(message: types.Message):
         await message.answer(f"Assalomu aleykum, Online Do'konga xush kelibsiz!\n\n"
                              f"Ro'yxatdan o'tish uchun /registration komandasini bosing.")
     else:
-        category_list = await db.get_category()
-        btn = main_menu(category_list)
-        await message.answer(f"Bo'limlardan birini tanlang: ", reply_markup=btn)
+        if type(message) is Message:
+            await message.answer(f"Online Do'konga xush kelibsiz.", reply_markup=main_menu)
+        else:
+            await message.answer()
+            await message.message.edit_text(f"Online Do'konga xush kelibsiz.", reply_markup=main_menu)

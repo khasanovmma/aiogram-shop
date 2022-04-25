@@ -8,7 +8,7 @@ async def add_product(call: CallbackQuery, state: FSMContext):
     quantity = int(call.message.reply_markup.inline_keyboard[0][1].text)
     product_id = call.message.reply_markup.inline_keyboard[2][0].callback_data.split('back_product_list_')[1]
     data = await db.get_product_by_id(product_id)
-    product_name, product_price = data[1], int(float(data[-2]))
+    product_name, product_price = data[1], int(float(data[-1]))
     await state.update_data({
         product_name: {
             'price': product_price,

@@ -7,7 +7,7 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 ADMINS = os.getenv("ADMINS").split(',')
 
 WEB_HOST = '0.0.0.0'
-WEB_PORT = int(os.getenv('PORT'))
+# WEB_PORT = int(os.getenv('PORT'))
 
 DB_USER = os.getenv('DB_USER')
 DB_PASS = os.getenv('DB_PASS')

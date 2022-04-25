@@ -22,11 +22,10 @@ async def remove(call: CallbackQuery, state: FSMContext):
                       f'{"-" * 25}'
 
         await call.answer()
-        btn = show_card_btn(data)
+        btn = await show_card_btn(data)
         await call.message.edit_text(result, reply_markup=btn)
     else:
-        category_list = await db.get_category()
-        btn = main_menu(category_list)
+        btn = main_menu
         await call.message.edit_text(f"Bo'limlardan birini tanlang: ", reply_markup=btn)
         await call.answer("Savat bo'sh❗")
 

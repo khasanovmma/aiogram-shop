@@ -1,12 +1,22 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
+main_menu = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text='🛍 Kataloglar', callback_data='categories'), ],
+        [InlineKeyboardButton(text='🛒 Savat', callback_data='shopping_card'), ],
+        [InlineKeyboardButton(text='👤 Mening profilim', callback_data='my_account'), ],
+    ]
+)
 
-def main_menu(data_list, subcategory=False, product=False, product_subcategory_code=None):
+
+async def generate_menu(data_list=[], main=False, subcategory=False, product=False, product_subcategory_code=None):
     menu = InlineKeyboardMarkup(row_width=1)
     for inner_data in data_list:
         menu.insert(InlineKeyboardButton(text=inner_data[0], callback_data=inner_data[1]))
 
-    if subcategory:
+    if main:
+        menu.insert(InlineKeyboardButton(text='🔙 Ortga', callback_data='main_menu'))
+    elif subcategory:
         menu.insert(InlineKeyboardButton(text='🔙 Ortga', callback_data='back_category'))
     elif product:
         menu.insert(InlineKeyboardButton(text='🔙 Ortga', callback_data='back_' + product_subcategory_code))
@@ -14,7 +24,7 @@ def main_menu(data_list, subcategory=False, product=False, product_subcategory_c
     return menu
 
 
-def product(product_id, quantity=None):
+async def product(product_id, quantity=None):
     menu = InlineKeyboardMarkup(inline_keyboard=[
         [
             InlineKeyboardButton(text='➖', callback_data='minus'),
@@ -33,21 +43,22 @@ def product(product_id, quantity=None):
     return menu
 
 
-def show_card_btn(product_data):
+async def show_card_btn(product_data):
     menu = InlineKeyboardMarkup(
+        row_width=2,
         inline_keyboard=[
-
             [
-                InlineKeyboardButton(text='🔙 Bosh menu', callback_data='back_category'),
+                InlineKeyboardButton(text='🔙 Bosh menu', callback_data='main_menu'),
                 InlineKeyboardButton(text='Savatni tozalash', callback_data='clear'),
-            ],
-            [
-                InlineKeyboardButton(text=f'❌ {key}', callback_data=f'remove_{product_data[key]["product_id"]}') for key
-                in product_data
-            ],
-            [
-                InlineKeyboardButton(text='Buyurtma berish 🛍', callback_data='order')
             ]
         ]
     )
+    for key in product_data:
+        menu.insert(InlineKeyboardButton(text=f'❌', callback_data=f'remove_{product_data[key]["product_id"]}'))
+        menu.insert(InlineKeyboardButton(text=f'{key}', callback_data=f'remove_{product_data[key]["product_id"]}'))
+
+    menu.insert(InlineKeyboardButton(text='Buyurtma berish 🛍', callback_data='order'))
+
+
+
     return menu
