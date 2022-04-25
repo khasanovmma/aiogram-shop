@@ -44,8 +44,7 @@ async def end_register(msg: Message, state: FSMContext):
         data = await state.get_data()
         full_name = data['full_name']
         phone_number = msg.contact.phone_number
-        category_list = await db.get_category()
-        btn = main_menu(category_list)
+        btn = main_menu
 
         await db.update_user(full_name, phone_number, chat_id)
         await msg.answer("Ro'yxatdan o'tdingiz😊.", reply_markup=ReplyKeyboardRemove())
