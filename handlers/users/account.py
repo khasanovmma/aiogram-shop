@@ -11,3 +11,4 @@ async def my_account(call: CallbackQuery):
     full_name = await db.user_info(chat_id)
     btn = await generate_menu(main=True)
     await call.message.edit_text(full_name, reply_markup=btn)
+    
